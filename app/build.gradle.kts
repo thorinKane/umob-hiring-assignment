@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -49,7 +51,14 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+
     val coroutineVersion = "1.6.4"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
