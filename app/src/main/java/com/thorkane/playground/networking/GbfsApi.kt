@@ -5,28 +5,6 @@ import com.thorkane.playground.networking.models.Root
 import retrofit2.http.GET
 
 /**
- * Wraps API Responses from Retrofit with more state friendly sealed classes.
- */
-sealed class APIResponse<T>(val data: T? = null, val message: String? = null) {
-    /**
-     * Represents a successful request.
-     * @param data the data from the retrofit response.
-     */
-    class Success<T>(data: T) : APIResponse<T>(data)
-
-    /**
-     * Represents a request Error state.
-     * @param data will always be null here since the request failed.
-     * @param message consumer will have the opportunity to pass along a friendly error message via
-     * this parameter.
-     */
-    class Error<T>(
-        data: T? = null,
-        message: String? = null
-    ) : APIResponse<T>(data, message)
-}
-
-/**
  * Defines the networking interface with GBFS.
  */
 interface GbfsApi {
@@ -39,6 +17,27 @@ interface GbfsApi {
     /**
      * Get request for Free Bike Status Feed.
      */
-    @GET
+    @GET("free_bike_status.json")
     suspend fun getFreeBikeStatus(): BikeStatusFeed
 }
+
+/**
+ * A better way to do this might be some sort of registry. Potentially a registry could be
+ * built up using codegen like in Anvil, see [https://github.com/square/anvil]. For now we will just statically declare
+ * our endpoints we are interested in.
+ *
+ * Below are the three chosen provider integrations per the requirements. I focused on a single locale,
+ * Brussels, in order to allow for easy comparison of service level across the providers. In addition
+ * to this these 3 provider APIs had a high degree of uniformity which limits the number of edge cases
+ * we need to handle in our models; this is ideal for an exercise of this scope.
+ *
+ * See [https://github.com/umob-app/hiring-assignment] for more info.
+ */
+@ApiUrl("https://gbfs.api.ridedott.com/public/v2/brussels/")
+interface RideDottApi: GbfsApi
+
+@ApiUrl("https://data.lime.bike/api/partners/v2/gbfs/brussels/")
+interface LimeApi: GbfsApi
+
+@ApiUrl("https://gbfs.getapony.com/v1/Brussels/en/")
+interface PonyApi: GbfsApi

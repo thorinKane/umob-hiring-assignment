@@ -40,5 +40,6 @@ data class Bike(
 
     @SerializedName("current_fuel_percent")
     private val currentFuelPercent: Float,
+
     // Add more properties here as needed
 )

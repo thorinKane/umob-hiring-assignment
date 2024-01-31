@@ -1,4 +1,4 @@
-package com.thorkane.playground.repositories
+package com.thorkane.playground.service
 
 import com.thorkane.playground.networking.APIResponse
 import com.thorkane.playground.networking.GbfsApi
