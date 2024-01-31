@@ -16,4 +16,12 @@ class GbfsService(private val api: GbfsApi) {
         }
     }
 
+    suspend fun getBikeStatusFeed(): APIResponse<BikeStatusFeed> {
+        return try {
+            val feeds = api.getFreeBikeStatus()
+            APIResponse.Success(data = feeds)
+        } catch (exception: Exception) { // TODO more specific exception type
+            APIResponse.Error(message = "An Error Occurred: ${exception.message.toString()}")
+        }
+    }
 }
