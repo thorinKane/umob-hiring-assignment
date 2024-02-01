@@ -8,4 +8,4 @@ import dagger.hilt.android.HiltAndroidApp
  * over feature richness here.
  */
 @HiltAndroidApp
-class PlaygroundApplication : Application() { }
+class PlaygroundApplication : Application()
