@@ -8,11 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.thorkane.playground.login.LoginManager
+import com.thorkane.playground.presenter.Event
 import kotlinx.coroutines.flow.Flow
-
-sealed interface Event {
-    data object LogIn: Event
-    data object LogOut: Event
+sealed interface LoginEvent: Event {
+    data object LogIn: LoginEvent
+    data object LogOut: LoginEvent
 }
 
 sealed class LoginModel {
@@ -26,19 +26,19 @@ sealed class LoginModel {
 }
 
 @Composable
-fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event: Event) -> Unit): LoginModel {
+fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event: LoginEvent) -> Unit): LoginModel {
     val loggedInState by loginManager.isLoggedIn.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         events.collect {
             when (it) {
-                is Event.LogIn -> {
+                is LoginEvent.LogIn -> {
                     isLoading = true
                     loginManager.login()
                 }
 
-                is Event.LogOut -> {
+                is LoginEvent.LogOut -> {
                     isLoading = true
                     loginManager.logout()
                 }
@@ -54,7 +54,7 @@ fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event
         is LoginManager.LoggedInState.LoggedOut -> {
             LoginModel.LoggedOut(isLoading) {
                 isLoading = true
-                take(Event.LogIn)
+                take(LoginEvent.LogIn)
             }
         }
     }

@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
 import com.thorkane.playground.login.LoginManager
-import com.thorkane.playground.login.presenter.Event
 import com.thorkane.playground.login.presenter.loginPresenter
+import com.thorkane.playground.presenter.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
