@@ -8,7 +8,7 @@ import com.thorkane.playground.login.ui.LoginScreen
 @Composable
 fun Main(model: LoginModel) {
     when(model) {
-        is LoginModel.LoggedIn -> HomeScreen()
+        is LoginModel.LoggedIn -> HomeScreen(model = model)
         is LoginModel.LoggedOut -> LoginScreen(model = model)
     }
 }

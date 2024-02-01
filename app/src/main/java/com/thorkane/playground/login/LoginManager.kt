@@ -13,7 +13,7 @@ interface LoginManager {
         data object LoggedOut: LoggedInState
 
         data class LoggedIn(
-            private val user: User
+            val user: User
         ): LoggedInState
     }
 }

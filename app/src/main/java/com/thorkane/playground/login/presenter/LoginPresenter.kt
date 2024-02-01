@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.thorkane.playground.login.LoginManager
+import com.thorkane.playground.login.User
 import com.thorkane.playground.presenter.Event
 import kotlinx.coroutines.flow.Flow
 sealed interface LoginEvent: Event {
@@ -21,12 +22,23 @@ sealed class LoginModel {
         val login: () -> Unit
     ): LoginModel()
 
-    data object LoggedIn : LoginModel()
+    data class LoggedIn(
+        val user: User,
+        val login: () -> Unit
+    ) : LoginModel()
 
 }
 
+/**
+ * The presenter responsible for translating user logged in state into models for consumption
+ * by the UI. This presenter is the defacto root presenter of our application.
+ */
 @Composable
-fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event: LoginEvent) -> Unit): LoginModel {
+fun loginPresenter(
+    events: Flow<Event>,
+    loginManager: LoginManager,
+    take: (event: LoginEvent) -> Unit
+): LoginModel {
     val loggedInState by loginManager.isLoggedIn.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
 
@@ -39,7 +51,6 @@ fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event
                 }
 
                 is LoginEvent.LogOut -> {
-                    isLoading = true
                     loginManager.logout()
                 }
             }
@@ -49,11 +60,15 @@ fun loginPresenter(events: Flow<Event>, loginManager: LoginManager, take: (event
     return when(loggedInState) {
         is LoginManager.LoggedInState.LoggedIn -> {
             isLoading = false
-            LoginModel.LoggedIn
+            LoginModel.LoggedIn(
+                // Not sure why I needed to cast this. Take a look later.
+                (loggedInState as LoginManager.LoggedInState.LoggedIn).user
+            ) {
+                take(LoginEvent.LogOut)
+            }
         }
         is LoginManager.LoggedInState.LoggedOut -> {
             LoginModel.LoggedOut(isLoading) {
-                isLoading = true
                 take(LoginEvent.LogIn)
             }
         }

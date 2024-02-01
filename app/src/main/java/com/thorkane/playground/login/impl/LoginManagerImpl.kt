@@ -53,9 +53,10 @@ class LoginManagerImpl @Inject constructor(
                 delay(2000)
                 // Generate a random token. In reality this would be the result of some authentication request.
                 val user = User(userToken = Random.nextInt(10_000).toString())
-//                check(prefs.edit().putString(USER_KEY, user.userToken).commit()) {
-//                    "Could not persist user token."
-//                }
+                // Persist user token across sessions so we don't need to login every time the app launches.
+                check(prefs.edit().putString(USER_KEY, user.userToken).commit()) {
+                    "Could not persist user token."
+                }
 
                 _isLoggedIn.value = LoginManager.LoggedInState.LoggedIn(user)
             }
