@@ -63,7 +63,7 @@ class GamePresenter @Inject constructor(
 
                         is GameEvent.ViewHistory -> {
                             gameManager.recordScore(score)
-                            loggedInNavigator.goTo(Destinations.HOME)
+                            loggedInNavigator.goTo(Destinations.HISTORY)
                         }
 
                         else -> {

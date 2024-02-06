@@ -1,6 +1,7 @@
 package com.thorkane.playground.navigation.impl
 
 import com.thorkane.playground.game.presenter.GamePresenter
+import com.thorkane.playground.history.presenter.HistoryPresenter
 import com.thorkane.playground.home.HomePresenter
 import com.thorkane.playground.navigation.Destinations
 import com.thorkane.playground.navigation.LoggedInNavigator
@@ -15,15 +16,14 @@ import javax.inject.Inject
  */
 class DestinationResolver @Inject constructor(
     private val homePresenter: HomePresenter,
-    private val gamePresenter: GamePresenter
+    private val gamePresenter: GamePresenter,
+    private val historyPresenter: HistoryPresenter,
 ) {
     fun resolveDestination(destination: Destinations): Presenter<*> {
         return when(destination) {
             Destinations.HOME -> homePresenter
             Destinations.GAME -> gamePresenter
-            Destinations.HISTORY -> {
-                throw Error("Destination Not yet Implemented")
-            }
+            Destinations.HISTORY -> historyPresenter
         }
     }
 }
