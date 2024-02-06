@@ -1,4 +1,4 @@
-package com.thorkane.playground
+package com.thorkane.playground.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.thorkane.playground.main.Main
+import com.thorkane.playground.main.ui.Main
 import com.thorkane.playground.ui.theme.PlaygroundTheme
 import dagger.hilt.android.AndroidEntryPoint
 

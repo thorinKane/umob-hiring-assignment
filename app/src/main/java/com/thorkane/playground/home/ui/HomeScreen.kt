@@ -1,4 +1,4 @@
-package com.thorkane.playground.home
+package com.thorkane.playground.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thorkane.playground.home.HomePresenter
+import com.thorkane.playground.login.presenter.LoginEvent
 import com.thorkane.playground.login.presenter.LoginModel
 
 @Composable
-fun HomeScreen(model: LoginModel.LoggedIn) {
+fun HomeScreen(model: HomePresenter.HomeModel) {
     Column(
         Modifier
             .fillMaxSize()
@@ -26,7 +28,11 @@ fun HomeScreen(model: LoginModel.LoggedIn) {
     ) {
         Text("Home Screen", fontSize = 32.sp)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = model.login) {
+        Button(onClick = { model.onEvent(HomePresenter.HomeEvent.StartGame) }) {
+            Text("Start Game", fontSize = 18.sp)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { model.onEvent(HomePresenter.HomeEvent.Logout) }) {
             Text("Logout", fontSize = 18.sp)
         }
     }
