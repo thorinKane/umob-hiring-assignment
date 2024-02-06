@@ -1,5 +1,5 @@
 # umob hiring assignment
-For more information on the assingnment see [https://github.com/umob-app/hiring-assignment]
+For more information on the assignment see [https://github.com/umob-app/hiring-assignment]
 
 ## Getting Set up.
 - Pull this repo
@@ -13,6 +13,8 @@ The architecture vaguely follows an Model-View-Presenter (MVP) paradigm.
 
 I chose to use Android because it is what I work in on a day to day basis; therefore I can follow some known patterns and implement things quickly. I combined things I am familiar with, like molecule, 
 with some things that are pretty new to me, like Compose UI.
+
+![Presenter Diagram](PresenterDiagram.png)
 
 ## Things I would change
 I left a number of comments and TODOs throughout the codebase to mark things that need improving. The UI needs a lot of work and could be made much much nicer if I had time. I also had to cut some corners
