@@ -5,6 +5,7 @@ import kotlin.random.Random
 interface Question {
     val prompt: String
     val choices: List<Choice>
+
     fun verify(): Boolean
 }
 

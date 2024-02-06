@@ -57,10 +57,12 @@ class GamePresenter @Inject constructor(
                 onEvent = onEvent {
                     when (it) {
                         is GameEvent.Quit -> {
+                            gameManager.recordScore(score)
                             loggedInNavigator.goTo(Destinations.HOME)
                         }
 
                         is GameEvent.ViewHistory -> {
+                            gameManager.recordScore(score)
                             loggedInNavigator.goTo(Destinations.HOME)
                         }
 

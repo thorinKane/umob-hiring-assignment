@@ -1,7 +1,9 @@
 package com.thorkane.playground.game
 
+import android.os.Build
 import android.util.Log
 import com.thorkane.playground.coroutines.IODispatcher
+import com.thorkane.playground.history.HistoryManager
 import com.thorkane.playground.repositories.BikeList
 import com.thorkane.playground.repositories.DottRepository
 import com.thorkane.playground.repositories.LimeRepository
@@ -18,6 +20,7 @@ class GameManager @Inject constructor(
     private val dottRepository: DottRepository,
     private val limeRepository: LimeRepository,
     private val ponyRepository: PonyRepository,
+    private val historyManager: HistoryManager,
     @IODispatcher dispatcher: CoroutineDispatcher
 ) {
     private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -51,6 +54,14 @@ class GameManager @Inject constructor(
         coroutineScope.launch {
             ponyRepository.feed.collect {
                 _ponyFeed.emit(it)
+            }
+        }
+    }
+
+    fun recordScore(score: Int) {
+        coroutineScope.launch {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                historyManager.recordScore(score)
             }
         }
     }

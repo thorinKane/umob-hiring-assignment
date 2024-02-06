@@ -1,5 +1,7 @@
 package com.thorkane.playground
 
+import com.thorkane.playground.history.HistoryManager
+import com.thorkane.playground.history.HistoryManagerImpl
 import com.thorkane.playground.login.LoginManager
 import com.thorkane.playground.login.impl.LoginManagerImpl
 import com.thorkane.playground.navigation.LoggedInNavigator
@@ -24,4 +26,10 @@ abstract class AppBindingModule {
     abstract fun bindLoggedInNavigator(
         loggedInNavigatorImpl: LoggedInNavigatorImpl
     ): LoggedInNavigator
+
+    @Binds
+    @Singleton
+    abstract fun bindHistoryManager(
+        historyManagerImpl: HistoryManagerImpl
+    ): HistoryManager
 }
