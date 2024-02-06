@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thorkane.playground.login.presenter.LoginEvent
 import com.thorkane.playground.login.presenter.LoginModel
 
 @Composable
@@ -30,7 +31,7 @@ fun LoginScreen(model: LoginModel.LoggedOut) {
         } else {
             Text("Login Screen", fontSize = 32.sp)
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = model.login) {
+            Button(onClick = { model.onEvent(LoginEvent.LogIn) }) {
                 Text("Login", fontSize = 18.sp)
             }
         }

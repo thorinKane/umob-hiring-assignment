@@ -9,67 +9,88 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.thorkane.playground.login.LoginManager
 import com.thorkane.playground.login.User
+import com.thorkane.playground.navigation.impl.LoggedInNavigationPresenter
 import com.thorkane.playground.presenter.Event
-import kotlinx.coroutines.flow.Flow
+import com.thorkane.playground.presenter.Model
+import com.thorkane.playground.presenter.ModelDelegate
+import com.thorkane.playground.presenter.Presenter
+import com.thorkane.playground.presenter.onEvent
+import javax.inject.Inject
+
 sealed interface LoginEvent: Event {
     data object LogIn: LoginEvent
     data object LogOut: LoginEvent
 }
 
-sealed class LoginModel {
+sealed class LoginModel: Model {
     data class LoggedOut(
         val isLoading: Boolean,
-        val login: () -> Unit
+        val onEvent: (Event) -> Unit,
     ): LoginModel()
 
-    data class LoggedIn(
+    class LoggedIn(
         val user: User,
-        val login: () -> Unit
-    ) : LoginModel()
-
-}
-
-/**
- * The presenter responsible for translating user logged in state into models for consumption
- * by the UI. This presenter is the defacto root presenter of our application.
- */
-@Composable
-fun loginPresenter(
-    events: Flow<Event>,
-    loginManager: LoginManager,
-    take: (event: LoginEvent) -> Unit
-): LoginModel {
-    val loggedInState by loginManager.isLoggedIn.collectAsState()
-    var isLoading by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        events.collect {
-            when (it) {
-                is LoginEvent.LogIn -> {
-                    isLoading = true
-                    loginManager.login()
-                }
-
-                is LoginEvent.LogOut -> {
-                    loginManager.logout()
-                }
-            }
+        val onEvent: (Event) -> Unit,
+        private val child: Model,
+    ) : LoginModel(), ModelDelegate {
+        override fun delegate(): Model {
+            return child
         }
     }
+}
 
-    return when(loggedInState) {
-        is LoginManager.LoggedInState.LoggedIn -> {
-            isLoading = false
-            LoginModel.LoggedIn(
-                // Not sure why I needed to cast this. Take a look later.
-                (loggedInState as LoginManager.LoggedInState.LoggedIn).user
-            ) {
-                take(LoginEvent.LogOut)
+class LoginPresenter @Inject constructor(
+    private val loginManager: LoginManager,
+    private val loggedInNavigationPresenter: LoggedInNavigationPresenter
+) : Presenter<LoginModel> {
+    @Composable
+    override fun present(): LoginModel {
+        val loggedInState by loginManager.isLoggedIn.collectAsState()
+        var isLoading by remember { mutableStateOf(false) }
+
+        if(isLoading) {
+            LaunchedEffect(Unit) {
+                isLoading = when (loggedInState) {
+                    is LoginManager.LoggedInState.LoggedOut -> {
+                        loginManager.login()
+                        false
+                    }
+
+                    is LoginManager.LoggedInState.LoggedIn -> {
+                        loginManager.logout()
+                        false
+                    }
+                }
             }
         }
-        is LoginManager.LoggedInState.LoggedOut -> {
-            LoginModel.LoggedOut(isLoading) {
-                take(LoginEvent.LogIn)
+
+        return when (loggedInState) {
+            is LoginManager.LoggedInState.LoggedIn -> {
+                LoginModel.LoggedIn(
+                    // Not sure why I needed to cast this. Take a look later.
+                    user = (loggedInState as LoginManager.LoggedInState.LoggedIn).user,
+                    onEvent = onEvent {
+                        when (it) {
+                            is LoginEvent.LogOut -> {
+                                isLoading = true
+                            }
+                        }
+                    },
+                    loggedInNavigationPresenter.present()
+                )
+            }
+
+            is LoginManager.LoggedInState.LoggedOut -> {
+                LoginModel.LoggedOut(
+                    isLoading = isLoading,
+                    onEvent = onEvent {
+                        when (it) {
+                            is LoginEvent.LogIn -> {
+                                isLoading = true
+                            }
+                        }
+                    }
+                )
             }
         }
     }
